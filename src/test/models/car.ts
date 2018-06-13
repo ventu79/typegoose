@@ -18,6 +18,12 @@ export class Car extends Typegoose {
 
   @prop({ required: true })
   price: Decimal128;
+
+  @prop({ lowercase: true })
+  modelLower: string;
+
+  @prop({ uppercase: true })
+  modelUpper: string;
 }
 
 export const model = new Car().getModelForClass(Car);

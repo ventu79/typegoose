@@ -21,6 +21,8 @@ describe('Typegoose', () => {
   it('should create a User with connections', async () => {
     const car = await Car.create({
       model: 'Tesla',
+      modelLower: 'Tesla',
+      modelUpper: 'Tesla',
       price: Decimal128.fromString('50123.25'),
     });
 
@@ -82,6 +84,8 @@ describe('Typegoose', () => {
       expect(foundUser.job.jobType).to.have.property('field', 'IT');
       expect(foundUser.job.jobType).to.have.property('salery').to.be.a('number');
       expect(foundUser.car).to.have.property('model', 'Tesla');
+      expect(foundUser.car).to.have.property('modelLower', 'Tesla'.toLowerCase());
+      expect(foundUser.car).to.have.property('modelUpper', 'Tesla'.toUpperCase());
       expect(foundUser).to.have.property('previousJobs').to.have.length(2);
 
       expect(foundUser).to.have.property('fullName', 'John Doe');
@@ -259,6 +263,8 @@ describe('getClassForDocument()', () => {
     }
     const car = await Car.create({
       model: 'Tesla',
+      modelLower: 'Tesla',
+      modelUpper: 'Tesla',
       price: Decimal128.fromString('123.45'),
     });
     const foundCar = await Car.findById(car._id).exec();

@@ -34,6 +34,9 @@ export interface ValidateStringOptions {
   minlength?: number | [number, string];
   maxlength?: number | [number, string];
   match?: RegExp | [RegExp, string];
+  trim?: boolean;
+  lowercase?: boolean;
+  uppercase?: boolean;
 }
 
 export type PropOptionsWithNumberValidate = PropOptions & ValidateNumberOptions;
