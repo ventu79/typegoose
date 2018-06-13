@@ -19,6 +19,7 @@ export interface BasePropOptions {
   sparse?: boolean;
   expires?: string | number;
   _id?: boolean;
+	refType?: 'number' | 'string' | 'Buffer' | 'ObjectID';
 }
 
 export interface PropOptions extends BasePropOptions {
@@ -88,10 +89,27 @@ const baseProp = (rawOptions, Type, target, key, isArray = false) => {
   }
 
   const ref = rawOptions.ref;
+
+  let refType;
+  switch (rawOptions.refType) {
+    case 'number':
+      refType = mongoose.Schema.Types.Number;
+      break;
+    case 'string':
+      refType = mongoose.Schema.Types.String;
+      break;
+    case 'buffer':
+      refType = mongoose.Schema.Types.Buffer;
+      break;
+    default:
+      refType = mongoose.Schema.Types.ObjectId;
+      break;
+  }
+
   if (ref) {
     schema[name][key] = {
       ...schema[name][key],
-      type: mongoose.Schema.Types.ObjectId,
+      type: refType,
       ref: ref.name,
     };
     return;
@@ -101,7 +119,7 @@ const baseProp = (rawOptions, Type, target, key, isArray = false) => {
   if (itemsRef) {
     schema[name][key][0] = {
       ...schema[name][key][0],
-      type: mongoose.Schema.Types.ObjectId,
+      type: refType,
       ref: itemsRef.name,
     };
     return;
@@ -198,4 +216,5 @@ export const arrayProp = (options: ArrayPropOptions) => (target: any, key: strin
   baseProp(options, Type, target, key, true);
 };
 
-export type Ref<T> = T | ObjectID;
+export type RefType = number | string | ObjectID | Buffer;
+export type Ref<R, T extends RefType = ObjectID> = R | T;

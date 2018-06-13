@@ -42,6 +42,9 @@ export abstract class PersistentModel extends tg.Typegoose {
 }
 
 export class Person extends PersistentModel {
+    @tg.prop()
+    _id: string;
+
     // add new property
     @tg.prop({ required: true })
     email: string;
