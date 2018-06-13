@@ -4,7 +4,7 @@ import * as mongoose from 'mongoose';
 
 import { model as User, User as UserType } from './models/user';
 import { model as Car, Car as CarType } from './models/car';
-import { model as Person, PersistentModel } from './models/person';
+import { model as Person, Person as PersonType } from './models/person';
 import { PersonNested, AddressNested, PersonNestedModel } from './models/nested-object';
 import { Genders } from './enums/genders';
 import { Role } from './enums/role';
@@ -12,6 +12,7 @@ import { initDatabase, closeDatabase } from './utils/mongoConnect';
 import { getClassForDocument } from '../utils';
 import { Decimal128 } from 'bson';
 import { fail } from 'assert';
+import { model as Doc } from './models/docs';
 
 describe('Typegoose', () => {
   before(() => initDatabase());
@@ -204,6 +205,7 @@ describe('getClassForDocument()', () => {
 
   it('should use inherited schema', async () => {
     let user = await Person.create({
+      _id: 'VNTNDR79H13A944D',
       email: 'my@email.com',
     });
 
@@ -229,6 +231,28 @@ describe('getClassForDocument()', () => {
     expect(user.getClassName()).to.equals('Person');
     expect(Person.getStaticName()).to.equals('Person');
   });
+
+  it('should load document', async () => {
+		await Person.create({
+			_id: 'SCCMRC09B22H501A',
+			email: 'my2@email.com',
+		});
+
+		let doc = await Doc.create({
+      num: "0001",
+      owner: "VNTNDR79H13A944D",
+      people: ["VNTNDR79H13A944D", "SCCMRC09B22H501A"],
+    });
+
+		doc = await Doc.findById(doc.id).populate('owner').populate("people");
+
+		expect(doc.owner).to.have.property('email', 'my@email.com');
+
+		expect(doc.people.length).to.be.above(0);
+		_.map(doc.people, (currentPers: PersonType) => {
+			expect(currentPers).to.have.property('email');
+		});
+	});
 
   it('Should store nested address', async () => {
     const personInput = new PersonNested();
