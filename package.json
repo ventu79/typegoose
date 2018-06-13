@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/szokodiakos/typegoose.git"
+    "url": "https://github.com/ventu79/typegoose.git"
   },
   "types": "lib/typegoose.d.ts",
   "typings": "lib/typegoose.d.ts",
